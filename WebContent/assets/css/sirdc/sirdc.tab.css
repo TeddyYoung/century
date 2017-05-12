@@ -1,0 +1,59 @@
+#task-content {
+    float: left;
+    overflow: hidden;
+    position: relative;
+    line-height: 40px;
+    min-width: 120px;
+}
+#task-content-inner{
+	line-height: 40px;
+	min-width: 120px;
+}
+.macro-component-tabitem {
+    cursor: pointer;
+    display: block;
+    float: left;
+    /*height: 29px;*/
+    margin: 0 1px 0 0;
+    min-width: 101px;
+    /*padding: 5px 8px 4px;*/
+    position: relative;
+    text-align: center;
+}
+.macro-component-tabitem.current {
+    background: none repeat scroll 0 0 #dbe5e7;
+}
+.macro-component-tabitem:hover {
+    background: none repeat scroll 0 0 #dbe5e7;
+}
+
+.macro-tabs-item-text {
+    color: #428bca;
+    font-family: "Microsoft Yahei",verdana;
+    font-size: 14px;
+    line-height: 30px;
+    font-weight: bold;
+    cursor: pointer;
+    text-align: center;
+}
+.task-changebt {
+    background: none repeat scroll 0 0 #ecf0f1;
+}
+.task-changebt {
+    background: none repeat scroll 0 0 #ecf0f1;
+    /*color: #fff;*/
+    cursor: pointer;
+    display: none;
+    float: left;
+    font-size: 18px;
+    /*height: 38px;*/
+    text-align: center;
+    text-decoration: none;
+    width: 30px;
+}
+.task-changebt:hover {
+    background: none repeat scroll 0 0 #dbe5e7;
+}
+#breadcrumbs{
+	padding: 0px;
+}

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<taglib xmlns="http://java.sun.com/xml/ns/j2ee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-jsptaglibrary_2_0.xsd"
+	version="2.0">
+
+	<description>JSTL 1.1 functions library</description>
+	<display-name>JSTL functions sys</display-name>
+	<tlib-version>1.1</tlib-version>
+	<short-name>util</short-name>
+	<uri>http://java.sun.com/jsp/jstl/principal</uri>
+	
+	<function>
+		<description>获取用户ID</description>
+		<name>getUserId</name>
+		<function-class>com.sirdc.modules.util.SysUserUtils</function-class>
+		<function-signature>java.lang.String getUserId()</function-signature>
+		<example>${principal:getUserId()}</example>
+	</function>
+
+	<function>
+		<description>获取部门ID</description>
+		<name>getDeptId</name>
+		<function-class>com.sirdc.modules.util.SysUserUtils</function-class>
+		<function-signature>java.lang.String getDeptId()</function-signature>
+		<example>${principal:getDeptId()}</example>
+	</function>
+
+	<function>
+		<description>获取角色ID</description>
+		<name>getRoleId</name>
+		<function-class>com.sirdc.modules.util.SysUserUtils</function-class>
+		<function-signature>java.lang.String getRoleId()</function-signature>
+		<example>${principal:getRoleId()}</example>
+	</function>
+	
+	<function>
+		<description>获取默认部门ID</description>
+		<name>getDefaultDeptId</name>
+		<function-class>com.sirdc.modules.util.SysUserUtils</function-class>
+		<function-signature>java.lang.String getDefaultDeptId()</function-signature>
+		<example>${principal:getDefaultDeptId()}</example>
+	</function>
+
+	<function>
+		<description>获取默认角色ID</description>
+		<name>getDefaultRoleId</name>
+		<function-class>com.sirdc.modules.util.SysUserUtils</function-class>
+		<function-signature>java.lang.String getDefaultRoleId()</function-signature>
+		<example>${principal:getDefaultRoleId()}</example>
+	</function>
+</taglib>

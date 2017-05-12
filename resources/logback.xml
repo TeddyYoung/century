@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<configuration> 
+	<!-- 控制台输出日志 -->
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender"> 
+        <!-- encoders are assigned by default the type ch.qos.logback.classic.encoder.PatternLayoutEncoder --> 
+        <encoder> 
+            <pattern> 
+                %d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n 
+            </pattern> 
+        </encoder> 
+    </appender> 
+    <appender name="info"  class="ch.qos.logback.core.rolling.RollingFileAppender"> 
+        <file>target/logs/info.log</file> 
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy"> 
+            <!-- daily rollover --> 
+            <fileNamePattern>target/logs/info.%d{yyyy-MM-dd}.log</fileNamePattern> 
+            <!-- keep 30 days worth of history --> 
+            <maxHistory>30</maxHistory> 
+            <maxFileSize>20MB</maxFileSize> 
+        </rollingPolicy> 
+        <filter class="ch.qos.logback.classic.filter.LevelFilter"> 
+            <level>INFO</level> 
+            <onMatch>ACCEPT</onMatch> 
+            <onMismatch>DENY</onMismatch> 
+        </filter> 
+        <!-- encoders are assigned the type ch.qos.logback.classic.encoder.PatternLayoutEncoder by default --> 
+        <encoder> 
+            <pattern> 
+                %d{HH:mm:ss.SSS} %-5level %logger{35} - %msg%n 
+            </pattern> 
+        </encoder> 
+    </appender> 
+    <appender name="debug" class="ch.qos.logback.core.rolling.RollingFileAppender"> 
+        <file>target/logs/debug.log</file> 
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy"> 
+            <!-- daily rollover --> 
+            <fileNamePattern>target/logs/debug.%d{yyyy-MM-dd}.log</fileNamePattern> 
+            <!-- keep 30 days worth of history --> 
+            <maxHistory>30</maxHistory> 
+            <maxFileSize>20MB</maxFileSize> 
+        </rollingPolicy> 
+        <filter class="ch.qos.logback.classic.filter.LevelFilter"> 
+            <level>DEBUG</level> 
+            <onMatch>ACCEPT</onMatch> 
+            <onMismatch>DENY</onMismatch> 
+        </filter> 
+        <!-- encoders are assigned the type ch.qos.logback.classic.encoder.PatternLayoutEncoder 
+        by default --> 
+        <encoder> 
+            <pattern> 
+                %d{HH:mm:ss.SSS} %-5level %logger{35} - %msg%n 
+            </pattern> 
+        </encoder> 
+    </appender>	
+    <appender name="warn" class="ch.qos.logback.core.rolling.RollingFileAppender"> 
+        <file>target/logs/warn.log</file> 
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy"> 
+            <!-- daily rollover --> 
+            <fileNamePattern>target/logs/warn.%d{yyyy-MM-dd}.log</fileNamePattern> 
+            <!-- keep 30 days worth of history --> 
+            <maxHistory>30</maxHistory> 
+            <maxFileSize>20MB</maxFileSize> 
+        </rollingPolicy> 
+        <filter class="ch.qos.logback.classic.filter.LevelFilter"> 
+            <level>WARN</level> 
+            <onMatch>ACCEPT</onMatch> 
+            <onMismatch>DENY</onMismatch> 
+        </filter> 
+        <!-- encoders are assigned the type ch.qos.logback.classic.encoder.PatternLayoutEncoder by default --> 
+        <encoder> 
+            <pattern> 
+                %d{HH:mm:ss.SSS} %-5level %logger{35} - %msg%n 
+            </pattern> 
+        </encoder> 
+    </appender>	
+    <appender name="error" class="ch.qos.logback.core.rolling.RollingFileAppender"> 
+        <file>target/logs/error.log</file> 
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy"> 
+            <!-- daily rollover --> 
+            <fileNamePattern>target/logs/error.%d{yyyy-MM-dd}.log</fileNamePattern> 
+            <!-- keep 30 days worth of history --> 
+            <maxHistory>30</maxHistory> 
+            <maxFileSize>20MB</maxFileSize> 
+        </rollingPolicy> 
+        <filter class="ch.qos.logback.classic.filter.LevelFilter"> 
+            <level>ERROR</level> 
+            <onMatch>ACCEPT</onMatch> 
+            <onMismatch>DENY</onMismatch> 
+        </filter> 
+        <!-- encoders are assigned the type ch.qos.logback.classic.encoder.PatternLayoutEncoder  by default --> 
+        <encoder> 
+            <pattern> 
+                %d{HH:mm:ss.SSS} %-5level %logger{35} - %msg%n 
+            </pattern> 
+        </encoder> 
+    </appender>	
+     <appender name="sql" class="ch.qos.logback.core.rolling.RollingFileAppender"> 
+        <file>target/logs/sql.log</file> 
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy"> 
+            <!-- daily rollover --> 
+            <fileNamePattern>target/logs/sql.%d{yyyy-MM-dd}.log</fileNamePattern> 
+            <!-- keep 30 days worth of history --> 
+            <maxHistory>30</maxHistory> 
+            <maxFileSize>20MB</maxFileSize> 
+        </rollingPolicy> 
+         <filter class="ch.qos.logback.classic.filter.LevelFilter"> 
+            <level>DEBUG</level> 
+            <onMatch>ACCEPT</onMatch> 
+            <onMismatch>DENY</onMismatch> 
+        </filter> 
+        <encoder> 
+            <pattern> 
+                %d{HH:mm:ss.SSS} - %msg%n 
+            </pattern> 
+        </encoder> 
+    </appender> 
+
+    <logger name="org.springframework" level="DEBUG" additivity="false"> 
+        <appender-ref ref="debug"></appender-ref> 
+        <appender-ref ref="info"></appender-ref> 
+        <appender-ref ref="warn"></appender-ref> 
+        <appender-ref ref="warn"></appender-ref> 
+        <appender-ref ref="error"></appender-ref> 
+    </logger> 
+    
+    <!-- show parameters for hibernate sql 专为 Hibernate 定制 -->  
+<!--     <logger name="org.hibernate.type.descriptor.sql.BasicBinder" level="TRACE" >
+    	<appender-ref ref="hibernateSql"/> 
+    </logger>  
+    <logger name="org.hibernate.type.descriptor.sql.BasicExtractor" level="DEBUG" >
+    	<appender-ref ref="hibernateSql"/> 
+    </logger>    
+    <logger name="org.hibernate.SQL" level="DEBUG">
+   	 	<appender-ref ref="hibernateSql"/> 
+    </logger>    
+    <logger name="org.hibernate.engine.QueryParameters" level="DEBUG" >
+    	<appender-ref ref="hibernateSql"/> 
+    </logger>    
+    <logger name="org.hibernate.engine.query.HQLQueryPlan" level="DEBUG" >
+    	<appender-ref ref="hibernateSql"/> 
+    </logger>     -->
+    <logger name="druid.sql.Statement" level="DEBUG" >
+    	<appender-ref ref="sql"/> 
+    </logger>  
+    
+    <root level="warn"> 
+        <appender-ref ref="STDOUT" /> 
+        <appender-ref ref="warn" /> 
+    </root> 
+
+</configuration>

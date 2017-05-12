@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context" xmlns:jdbc="http://www.springframework.org/schema/jdbc"  
+	xmlns:jee="http://www.springframework.org/schema/jee" xmlns:tx="http://www.springframework.org/schema/tx"
+    xmlns:util="http://www.springframework.org/schema/util" xmlns:task="http://www.springframework.org/schema/task" xsi:schemaLocation="
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd
+		http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc-4.0.xsd
+		http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-4.0.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.0.xsd
+		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-4.0.xsd
+		http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task-4.0.xsd"
+	default-lazy-init="true">
+	
+	<description>Shiro Configuration</description>
+
+	<!-- 安全认证过滤器 -->
+	<bean id="shiroFilter" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">
+		<property name="securityManager" ref="securityManager" />
+		<property name="loginUrl" value="/login" />
+		<property name="successUrl" value="/" />
+		<property name="filters">
+            <map>
+                <entry key="authc" value-ref="formAuthenticationFilter"/>
+                <entry key="kickout" value-ref="kickoutSessionControlFilter"/>
+                <entry key="kickoutApp" value-ref="kickoutAppSessionControlFilter"/>
+                <entry key="loginApp" value-ref="appLoginSessionControlFilter"></entry>
+            </map>
+        </property>
+        <!-- Shiro 权限过滤过滤器定义 -->
+		<property name="filterChainDefinitions">
+			<value>
+				/assets/** = anon
+				/ValidateCodeServlet = anon
+				/login = authc
+				/logout = logout
+				/modules/** = user,kickout
+				/changeDeptRole = user,kickout
+				/ = user,kickout
+				/app/** = loginApp,kickoutApp
+		 	</value>
+		</property>
+	</bean>
+	
+	<!-- 踢人机制控制 -->
+	<bean id="kickoutSessionControlFilter" class="com.sirdc.modules.security.KickoutSessionControlFilter">
+        <property name="cacheManager" ref="shiroCacheManager"/>
+        <property name="sessionManager" ref="sessionManager"/>
+        <property name="kickoutAfter" value="false"/>
+        <property name="cachefix" value="server"/>
+        <property name="maxSession" value="1"/>
+        <property name="kickoutUrl" value="/login"/>
+    </bean>
+
+	<!-- 踢人机制控制 -->
+	<bean id="kickoutAppSessionControlFilter" class="com.sirdc.modules.security.KickoutSessionControlFilter">
+        <property name="cacheManager" ref="shiroCacheManager"/>
+        <property name="sessionManager" ref="sessionManager"/>
+        <property name="kickoutAfter" value="false"/>
+        <property name="cachefix" value="app"/>
+        <property name="maxSession" value="1"/>
+        <property name="kickoutUrl" value="/kickout"/>
+    </bean>
+
+	<!-- APP登陆信息过滤 -->
+	<bean id="appLoginSessionControlFilter" class="com.sirdc.modules.security.LoginSessionControlFilter">
+		<property name="forwardUrl" value="/timeout"></property>
+	</bean>
+    
+    <!-- rememberMe管理器 -->
+    <bean id="rememberMeManager" class="org.apache.shiro.web.mgt.CookieRememberMeManager">
+        <!-- rememberMe cookie加密的密钥 建议每个项目都不一样 默认AES算法 密钥长度（128 256 512 位）-->
+        <property name="cipherKey" value="#{T(org.apache.shiro.codec.Base64).decode('4AvVhmFLUs0KTA3Kprsdag==')}"/>
+        <property name="cookie" ref="rememberMeCookie"/>
+    </bean>
+    
+    <bean id="rememberMeCookie" class="org.apache.shiro.web.servlet.SimpleCookie">
+        <constructor-arg value="rememberMe"/>
+        <property name="httpOnly" value="true"/>
+        <property name="maxAge" value="2592000"/><!-- 30天 -->
+    </bean>
+	
+	<!-- 定义Shiro安全管理配置 -->
+	<bean id="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
+		<property name="authenticator" ref="authenticator" />
+		<property name="realms">  
+	        <list>  
+	            <ref bean="synAuthorizingRealm" />  
+	            <ref bean="systemAuthorizingRealm" />  
+	        </list>  
+	    </property>
+		<property name="sessionManager" ref="sessionManager" />
+		<property name="cacheManager" ref="shiroCacheManager" />
+		<property name="rememberMeManager" ref="rememberMeManager"/>
+	</bean>
+	
+	<!-- 自定义会话管理配置 -->
+	<bean id="sessionManager" class="com.sirdc.modules.shiro.session.SessionManager"> 
+		<property name="sessionDAO" ref="sessionDAO"/>
+		<!-- 会话超时时间，单位：毫秒  -->
+		<property name="globalSessionTimeout" value="${session.sessionTimeout}"/>
+		<!-- 定时清理失效会话, 清理用户直接关闭浏览器造成的孤立会话   -->
+		<property name="sessionValidationInterval" value="${session.sessionTimeoutClean}"/>
+ 		<property name="sessionValidationSchedulerEnabled" value="true"/>
+		<property name="sessionIdCookie" ref="sessionIdCookie"/>
+		<property name="sessionIdCookieEnabled" value="true"/>
+	</bean>
+	
+	<!-- 指定本系统SESSIONID, 默认为: JSESSIONID 问题: 与SERVLET容器名冲突, 如JETTY, TOMCAT 等默认JSESSIONID,
+		当跳出SHIRO SERVLET时如ERROR-PAGE容器会为JSESSIONID重新分配值导致登录会话丢失! -->
+	<bean id="sessionIdCookie" class="org.apache.shiro.web.servlet.SimpleCookie">
+	    <constructor-arg name="name" value="sirdc.session.id"/>
+	    <property name="maxAge" value="2592000"/><!-- 30天 -->
+	    <property name="httpOnly" value="true"/><!-- 防止跨站脚本攻击 -->
+	</bean>
+	
+	<!-- sessionId生成策略 -->
+	<bean id="idGen" class="com.sirdc.modules.shiro.uuid.ShiroIDGenerator" lazy-init="false"/>
+	
+	<!-- 自定义Session存储容器 -->
+	<bean id="sessionDAO" class="com.sirdc.modules.shiro.session.CacheSessionDAO">
+		<property name="sessionIdGenerator" ref="idGen" />
+		<property name="activeSessionsCacheName" value="activeSessionsCache" />
+		<property name="cacheManager" ref="shiroCacheManager" />
+		<property name="viewPrefix" value="${web.view.prefix}"/>
+		<property name="staticFiles" value="${web.staticFile}"/>
+	</bean>
+	
+	<!-- 定义授权缓存管理器 -->
+	<bean id="shiroCacheManager" class="org.apache.shiro.cache.ehcache.EhCacheManager">
+		<property name="cacheManager" ref="cacheManager"/>
+	</bean>
+	
+	<!-- 保证实现了Shiro内部lifecycle函数的bean执行 -->
+	<bean id="lifecycleBeanPostProcessor" class="org.apache.shiro.spring.LifecycleBeanPostProcessor"/>
+	
+	<!-- AOP式方法级权限检查  -->
+	<bean class="org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator" depends-on="lifecycleBeanPostProcessor">
+		<property name="proxyTargetClass" value="true" />
+	</bean>
+	
+	<bean class="org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor">
+    	<property name="securityManager" ref="securityManager"/>
+	</bean>
+	
+	<!-- 凭证匹配器 -->
+    <bean class="com.sirdc.modules.shiro.matcher.RetryLimitHashedCredentialsMatcher">
+        <constructor-arg ref="shiroCacheManager"/>
+        <property name="hashAlgorithmName" value="${password.hashAlgorithmName}"/><!-- 加密编码，如md5,SHA-256 -->
+        <property name="hashIterations" value="${password.hashIterations}"/><!-- 密码加密的迭代次数，如md5(md5(password + salt)) -->
+        <property name="storedCredentialsHexEncoded" value="true"/><!-- 默认使用Hex编码进行对key加密 -->
+    </bean>
+    
+    <bean id="authenticator" class="com.sirdc.modules.security.ModularRealmAuthenticator">  
+	    <property name="authenticationStrategy">  
+	        <bean class="org.apache.shiro.authc.pam.FirstSuccessfulStrategy" />  
+	    </property>  
+	</bean>
+</beans>

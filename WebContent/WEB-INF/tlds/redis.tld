@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<taglib xmlns="http://java.sun.com/xml/ns/j2ee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-jsptaglibrary_2_0.xsd"
+	version="2.0">
+
+	<description>JSTL 1.1 functions library</description>
+	<display-name>JSTL functions sys</display-name>
+	<tlib-version>1.1</tlib-version>
+	<short-name>redis</short-name>
+	<uri>http://java.sun.com/jsp/jstl/redis</uri>
+
+	<!-- 多语系部分 -->
+	<function>
+		<description>获取多语系</description>
+		<name>getMsg</name>
+		<function-class>com.sirdc.modules.sys.util.RedisUtils</function-class>
+		<function-signature>com.sirdc.modules.sys.entity.SysMsg getMsg(java.lang.String)</function-signature>
+		<example>${redis:getMsg(msgId)}</example>
+	</function>
+
+	<function>
+		<description>获取多语系值</description>
+		<name>getLang</name>
+		<function-class>com.sirdc.modules.sys.util.RedisUtils</function-class>
+		<function-signature>java.lang.String getLang(java.lang.String, java.lang.String)</function-signature>
+		<example>${redis:getLang(msgId, lang)}</example>
+	</function>
+
+	<!-- 菜单部分 -->
+	<function>
+		<description>获取菜单</description>
+		<name>getMenu</name>
+		<function-class>com.sirdc.modules.sys.util.RedisUtils</function-class>
+		<function-signature>com.sirdc.modules.sys.entity.SysMenu getMenu(java.lang.String)</function-signature>
+		<example>${redis:getMenu(sysId)}</example>
+	</function>
+	
+	<!-- 数据字典部分 -->
+	<function>
+		<description>获取字典对象 </description>
+		<name>getDict</name>
+		<function-class>com.sirdc.modules.sys.util.RedisUtils</function-class>
+		<function-signature>com.sirdc.modules.sys.entity.SysBas getDict(java.lang.String, java.lang.String)</function-signature>
+		<example>${redis:getDict(cla, basId)}</example>
+	</function>
+	
+	<function>
+		<description>获取字典列表 </description>
+		<name>getDictList</name>
+		<function-class>com.sirdc.modules.sys.util.RedisUtils</function-class>
+		<function-signature>java.util.List getDictList(java.lang.String, java.lang.Boolean)</function-signature>
+		<example>${redis:getDictList(cla, containBigCla)}</example>
+	</function>
+	
+	<function>
+		<description>获取字典列表Json </description>
+		<name>getDictListJson</name>
+		<function-class>com.sirdc.modules.sys.util.RedisUtils</function-class>
+		<function-signature>java.util.String getDictListJson(java.lang.String, java.lang.Boolean)</function-signature>
+		<example>${redis:getDictListJson(cla, containBigCla)}</example>
+	</function>
+
+	<function>
+		<description>获取字典列表 </description>
+		<name>getDictListByIds</name>
+		<function-class>com.sirdc.modules.sys.util.RedisUtils</function-class>
+		<function-signature>java.util.List getDictListByIds(java.lang.String, java.lang.String)</function-signature>
+		<example>${redis:getDictListByIds(cla, basIds)}</example>
+	</function>
+
+	<function>
+		<description>获取字典值 </description>
+		<name>getDictVal</name>
+		<function-class>com.sirdc.modules.sys.util.RedisUtils</function-class>
+		<function-signature>com.sirdc.modules.sys.entity.SysBas getDictVal(java.lang.String, java.lang.String, java.lang.String)</function-signature>
+		<example>${redis:getDictVal(cla, basId, key)}</example>
+	</function>
+	
+	<!-- 部门部分 -->
+	<function>
+		<description>获取部门 </description>
+		<name>getDept</name>
+		<function-class>com.sirdc.modules.sys.util.RedisUtils</function-class>
+		<function-signature>com.sirdc.modules.sys.entity.SysDept getDept(java.lang.String)</function-signature>
+		<example>${redis:getDept(deptId)}</example>
+	</function>
+</taglib>
